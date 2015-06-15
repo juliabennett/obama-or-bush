@@ -32,9 +32,9 @@ The database was created by running the script make\_data.py, which webscrapes t
 
 ####The model & hyperparameter tuning.
 
-Using standard techniques from natural language processing for author classification, I created a pretty strong baseline model. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search for the best hyperparameters for this model. The selection process is not completely automated, as the user is ultimately asked to choose from a list of models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. This search relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/). 
+Using standard techniques from natural language processing for author classification, I created a pretty strong baseline model. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search for the best hyperparameters. This search relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/). The selection process for these hyperparameters is not completely automated, as the user is ultimately asked to choose from a list of tuned models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. After this selection is made, the script saves the final model and evaluates it on unseen data.  
 
-After running this script and choosing a model that nicely compromised between the number of features and the regularization parameter, I tested the result on unseen data and observed the following stats: 
+I ran this script and chose a model that nicely compromised between the number of features and the regularization parameter, realizing the following stats on unseen data:
 
 * accuracy: 0.990697674419
 * F1 Score: 0.987804878049
@@ -48,7 +48,7 @@ Here's a few key components of this model:
 * Selects about 1500 of these features based on their chi-squared scores. 
 * Uses a support vector machine with a linear kernel and a regularization parameter about equal to 10. 
 
-Since Bush and Obama both use very particular opening and closing greetings, I removed the first and last sentence of each speech before building a model. This ensured that prediction is based only on true content. 
+Since Bush and Obama both use very particular opening and closing greetings, I removed the first and last sentence of each speech before creating any models. This ensured that prediction is based only on true content. 
 
 If you would like access to the tuned and trained model, download the folder "model_files" and run the following two lines from a directory containing its contents: 
 
@@ -57,6 +57,7 @@ from modeler import *
 clf = load_clf("final_model.pkl")
 ```
 
+For example, you can explore the model's coefficients and take a closer look at the final choice of hyperparameters. (This information will also be easily available in the finished app.)
 
 ### The app.
 
