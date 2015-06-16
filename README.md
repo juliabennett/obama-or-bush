@@ -4,11 +4,11 @@ Explores radio addresses given by Obama and Bush through webscraping, natural la
 
 ##Overview 
 
-This repository is describing a project that has four goals:
+This repository contains data and code from a ongoing project that has four goals:
 
-1. Provide a nice database storing data about radio addresses given by either Obama or Bush, including titles, dates, cleaned-up transcripts, and translations to parts of speech.
+1. Create a nice database storing data about radio addresses given by either Obama or Bush, including titles, dates, cleaned-up transcripts, and translations to parts of speech.
 
-2. Create a model that can predict which of these two presidents is the speaker using text from a radio address that it's never seen before. 
+2. Define a model that can predict which of these two presidents is the speaker using text from a radio address that it's never seen before. 
 
 3. Try out Bayesian optimization for hyperparameter tuning using Yelp's Metric Optimization Engine (MOE). 
 
@@ -28,11 +28,11 @@ The sqlite database obama\_or\_bush.db contains a table called radio\_addresses 
 * speech: a transcript of the speech (all unicode symbols were replaced in the standard way so that the text is super clean)
 * pos: the result of translating each word and punctuation in the transcripts to its part of speech using nltk's part of speech tagger (which does produce a few errors along the way)
 
-The database was created by running the script make\_data.py, which webscrapes the official Whitehouse website and the former official Whitehouse website. It's worth noting that this compilation is nearly comprehensive, but the webscraping script does fail to catch some small number of radio addresses. 
+The database was created by running the script make\_data.py, which webscrapes the official Whitehouse website and the former official Whitehouse website. It's worth noting that this compilation is nearly comprehensive, but the webscraping script does fail to catch some small number of radio addresses (and obviously doesn't include any that will happen in the future). As is always the case, this script will stop working if either of these websites changes too much. 
 
 ####The model & hyperparameter tuning.
 
-Using standard techniques from natural language processing for author classification, I created a pretty strong baseline model. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search for the best hyperparameters. This search relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/). The selection process for these hyperparameters is not completely automated, as the user is ultimately asked to choose from a list of tuned models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. After this selection is made, the script saves the final model and evaluates it on unseen data.  
+Using standard techniques from natural language processing for author classification, I created a pretty strong baseline model without too much trouble. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search to improve the choice of hyperparameters for this model. This script does not completely automate the selection process for these hyperparameters. Intead, it allows the user to choose from a list of tuned models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. After this selection is made, the script saves the final model and evaluates it on unseen data.  The searching process relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/).
 
 I ran this script and chose a model that nicely compromised between the number of features and the regularization parameter, realizing the following stats on unseen data:
 
@@ -44,9 +44,9 @@ I ran this script and chose a model that nicely compromised between the number o
 Here's a few key components of this model: 
 
 * Filters noise by removing numbers, punctuation, and tagging errors from the data. 
-* Creates two type of features: 1) tf-idf scores from regular ol' 1-grams, and 2) tf scores from 2-grams describing parts of speech (e.g. "NOUN VERB"). 
+* Creates two types of features: 1) tf-idf scores from regular ol' 1-grams, and 2) tf scores from 2-grams describing parts of speech (e.g. "NOUN VERB"). 
 * Selects about 1500 of these features based on their chi-squared scores. 
-* Uses a support vector machine with a linear kernel and a regularization parameter about equal to 10. 
+* Uses a support vector machine with a linear kernel. The regularization parameter is about equal to 10. 
 
 Since Bush and Obama both use very particular opening and closing greetings, I removed the first and last sentence of each speech before creating any models. This ensured that prediction is based only on true content. 
 
@@ -57,7 +57,7 @@ from modeler import *
 clf = load_clf("final_model.pkl")
 ```
 
-For example, you can explore the model's coefficients and take a closer look at the final choice of hyperparameters. (This information will also be easily available in the finished app.)
+For example, you can explore the model's coefficients and take a closer look at the final choice of hyperparameters. (This type of information will also be easily available in the finished app.)
 
 ### The app.
 
