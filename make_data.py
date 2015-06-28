@@ -217,7 +217,7 @@ def download_process_store(database_name):
     addresses = addresses.drop_duplicates(subset="speech").dropna(axis=0)
     addresses["id"] = range(addresses.shape[0])
     con = sqlite3.connect(database_name)
-    addresses.to_sql("radio_addresses", con, index=False)
+    addresses.to_sql("radio_addresses", con, index=False, if_exists="replace")
 
 if __name__ == '__main__':
     try: 

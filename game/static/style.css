@@ -1,0 +1,280 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans Condensed";
+  font-weight: 300;
+}
+
+p { font-size: 1.6em; } 
+a { color: #1369AD; }
+
+li {
+  font-size: 1.6em;
+  margin: .5em 2em;
+}
+
+.credit{
+  font-size: 1em;
+  text-align: right;
+  margin-right: .5em;
+}
+
+.header {
+  background: url("faceoff.jpg") no-repeat fixed;
+  background-size: cover;
+  height: 67vh;
+  border-bottom: 1px solid #000;
+  background-position: 50% 50%;
+  position: relative;
+}
+
+.splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, .15);
+}
+
+.container {
+  width: 90%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.center {
+  margin: 10px auto 0 auto;
+  text-align: center;
+}
+
+.inset-top { margin-top: 25px; }
+.inset-bottom { margin-bottom: 50px; }
+.padded-top { padding-top: 10px; }
+
+.text-xs { font-size: 1em;}
+.text-sm { font-size: 1.2em;}
+.text-md { font-size: 1.3em; }
+.text-lg { font-size: 3em; }
+.text-mxl { font-size: 4em; }
+.text-xl { font-size: 4.5em; }
+.heavy { font-weight: 700; }
+
+.grey {
+  background-color: rgba(0, 0, 0, .05);
+  padding: 1em;
+  border-radius: 5px;
+}
+
+.col-span { 
+  border-top: 3px solid #fff;
+  padding-top: 1em;
+  margin-top: 1em;
+}
+
+.transcript{
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+  -webkit-column-gap: 30px;
+  -moz-column-gap: 30px;
+  column-gap: 30px;
+}
+
+.transcript p {
+  text-align: justify;
+  margin: 0 0 1em 0;
+  font-size: 1.15em;
+  font-family: "Source Sans Pro";
+  font-weight: 200;
+}
+
+.highlight {
+  font-size: 1em;
+  font-family: "Source Sans Pro";
+  font-weight: 200;
+}
+
+#results .highlight {
+  background-color: #E7C600;
+  padding: 1px 5px;
+  border-radius: 4px; 
+}
+
+.button {
+  color: #fff;
+  display: inline-block;
+  text-align: center;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  padding: 5px 0;
+  width: 350px;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 10px auto 0 auto;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#Bush { background-color: #DD2626; }
+#Obama { background-color: #1369AD; }
+
+#refresh { 
+  margin-top: 15px; 
+  background-color: #DD2626; 
+}
+
+.summary > p { margin-top: 20px; }
+
+.indented {
+  margin-left: 25px;
+  margin-top: 10px;
+  font-size: 1.75em;
+}
+
+.indented:first-of-type {
+  margin-top: 15px;
+}
+
+.fa {
+  padding-right:10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.footer {
+  margin-top: 100px;
+}
+
+.hover-instruct {
+  margin-top: -2em;
+}
+
+input, select {
+  border: 1pt solid #231f20;
+  outline: none;
+  border-radius: 3px;
+  padding: 2px 0;
+  text-align: center; 
+  font-size: 1em;
+  padding-right: 3px;
+  background: none;
+}
+
+#order {
+  width: 11em;
+  padding-left: 2em;
+}
+
+#type {
+  width: 9.5em;
+  margin-right: 10px;
+}
+
+#text {
+  width: 9.5em;
+}
+
+input[type="number"] {
+  width: 2.75em;
+  margin-left: 5px;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+   opacity: 1;
+}
+
+.fadded{
+  color: rgba(0, 0, 0, .3);
+}
+
+.red-bar { fill: #DD2626; }
+.blue-bar { fill: #1369AD; }
+
+.red-bar:hover,
+.blue-bar:hover {
+  fill: #E7C600;  
+}
+
+.name { text-align: center; }
+
+.value {
+  color: #E7C600;
+  text-align: center;
+  padding-top: 3px;
+}
+
+.axis { font: 10px; }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+svg text {
+  font: 10px;
+  text-anchor: middle;
+}
+
+.graph {
+  width: 95%;
+  margin: 0 auto;
+  text-align: center;
+  overflow: scroll;
+}
+
+.d3-tip-top,
+.d3-tip-bot {
+  line-height: 1;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 10px;
+}
+
+.d3-tip-top:before,
+.d3-tip-bot:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  text-align: center;
+}
+
+.d3-tip-top:before { content: "\25B2"; }
+.d3-tip-bot:after { content: "\25BC"; }
+
+.d3-tip-bot.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.d3-tip-top.n:before {
+  margin: 0 0 -1px 0;
+  bottom: 100%;
+  left: 0;
+}
+
+@media screen and (min-width:641px) {
+  .grey { 
+    padding: 2em 2em; 
+    border-radius: 20px;
+  }
+
+  .text-lg { font-size: 3.5em; }
+  .text-mxl { font-size: 5em; }
+  .text-xl { font-size: 6em; }
+}

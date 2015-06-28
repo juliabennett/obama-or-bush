@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Who said it?</title>
+
+  <meta name='viewport' content='width=device-width,height=device-height,initial-scale=1'>
+
+  <meta name='author' content='Julia Bennett'>
+  <meta name='description' content='A guessing game.'>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+  <script src="{{ url_for('static', filename='plot.js') }}"></script>
+  <script src="//logitank.net/eugo.js"></script>
+
+</head>
+
+<body>
+
+  <header class='header'>
+    <div class='splash'></div>
+  </header>
+
+  <p class="credit"> Image credit: AFP/GETTY IMAGES </p>
+
+  <div id="play-again">
+    <div class='container inset-top inset-bottom'>
+      <div class="text-xl heavy"> Who said it? </div>
+      <p> Think you can determine if a presidential radio address was given by Obama or Bush? How many times can you get it right? Play the game to see if you're more accurate than a computer trained with machine learning. Don't worry, it's never seen these transcripts before either.</p>
+      <br>
+      <p> Each time you play, the computer will show you what influenced its decision. Maybe humans can learn something too? Also, check out <a href="/details">this page</a> to read more about the computer's decision-making process. </p>
+    </div>
+  
+    <div class="container"> 
+        <div class="text-lg heavy">Play the game.</div>
+        <p> Read the transcript below and use the buttons at the bottom to guess the speaker.</p>
+    </div>
+
+    <div class="container inset-top grey">
+      <div class="transcript">
+        {% for p in pars %}
+        <p> {{ p|safe }} </p>
+        {% endfor %}
+      </div>
+       <p class ="text-sm col-span"> NOTE: Since Obama and Bush both use very particular opening and closing greetings, the first and last sentence of each speech has been removed. Also, you'll notice that all years between 2000 and 2019 have been replaced with ****. These measures ensure that both you and the computer have to base your decision on actual content. </p>
+    </div>
+
+    <div class="container inset-top inset-bottom">
+      <div class="center">
+        <p> So... who said it? </p>
+        <div> <button type="button" class="text-md button" id="Obama">Obama</button> </div>
+        <div> <button type="button" class="text-md button" id="Bush">Bush</button> </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden" id="results">
+    <div class="container summary inset-top">
+      <div class="text-mxl heavy">How'd you do?</div>
+
+      <div class="indented"> 
+        <i class="fa fa-star-o"></i> 
+        Correct answer: <span class="heavy">{{ observed }}</span>. 
+      </div>
+
+      <div class="indented" id="human_correct"> 
+        <i class="fa fa-check-square-o"></i> 
+        You were right. 
+      </div>
+
+      <div class="indented" id="human_wrong"> 
+        <i class="fa fa-times"></i> 
+        You were wrong. 
+      </div>
+
+      <div class="indented" id="comp_correct"> 
+        <i class="fa fa-check-square-o"></i>  
+        The computer was right. 
+      </div>
+
+      <div class="indented" id="comp_wrong"> 
+        <i class="fa fa-times"> </i> 
+        The computer was wrong. 
+      </div>
+
+      <p>  So far, the computer has been right {{ num_correct }} times out of the {{ num_total }} times it's played this game. Check out the graph below to see the features of this particular transcript that influenced its decision the most: </p> 
+      <br>
+
+      <div class="center"> 
+        <div>
+          <p class="heavy">  Feature contributions ordered by 
+            <select id="order" class="heavy">
+              <option value="descMag">descending magnitude</option>
+              <option value="ascMag">ascending magnitude</option>
+              <option value="descVal">descending value</option>
+              <option value="ascVal">ascending value</option>
+            </select> 
+          </p> 
+        </div>      
+
+        <div class="text-sm padded-top"> 
+          <select id="type">
+            <option value="all">all feature types</option>
+            <option value="word">words</option>
+            <option value="pos">part of speech pairs</option>
+          </select>   
+          <input type="text" id="text" placeholder = "filter by feature name"> 
+        </div>
+
+        <div class="text-sm padded-top"> 
+          rank after ordering and filtering:
+          <input type="number" min="1" max="{{ num_contributors }}" value="1" id="lower"> 
+           to
+          <input type="number" min="1" max="{{ num_contributors }}" value="50" id="upper">
+        </div>
+      </div>
+
+      <div class="graph"></div> 
+
+      <div class="text-sm center hover-instruct"> (hover over bars to see feature names) </div>
+      
+      <br>
+      <p> The actual numbers shown above aren't particularly meaningful. Instead, imagine that each bar is voting for either Obama or Bush based on some feature of the transcript, and each bar's vote is weighted by its height. Some of the bars correspond to the frequency of a single word and others correspond to the frequency of two certain parts of speech appearing consecutively. </p>
+      <p> To help you build some intuition, the transcript is shown again below with highlighting that corresponds to the feature that most influenced the computer towards its decision. </p>
+    </div>
+
+    <div class="container inset-top grey">
+      <div class="transcript">
+        {% for p in pars %}
+        <p> {{ p|safe }} </p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="container inset-top inset-bottom" >
+      <p> Want more details? Take a look at the next section. </p>
+      <div class="center"> 
+        <button type="button" class="text-md button" id="refresh">Play Again?</button> 
+      </div>
+    </div>
+  </div>
+
+  <div class="container inset-top inset-bottom">
+    <div class="text-lg heavy"> Learn how it works. </div>
+    <p> Click <a href="/details">here</a> to learn more about how the computer makes its decisions, and also to see a pretty visualization about the way Obama and Bush speak in these radio addresses. </p>
+  </div>
+
+  <div class="container inset-top inset-bottom">
+    <div class="text-lg heavy"> More information. </div>
+    <p> More details about this project, including all relevant data and code, can be found <a href=https://github.com/juliabennett/obama-or-bush>here</a>. You can reach me by email at <a href="mailto:juliacbennett@gmail.com">juliacbennett@gmail.com</a>, and more information about me is available on <a href="https://github.com/juliabennett">my GitHub page</a>. I'd love to hear your feedback and suggestions! </p>
+  </div>
+
+  <div class="footer"> </div>
+
+  <script>
+
+    if(window.location.hash == "#results" && $("results").className == "hidden") {
+      window.location.hash = "";
+    }
+
+    makePlots(
+      "contribs",
+      "weighted contribution",
+      {{ num_contributors }},
+      {{ speech_id }}
+    );
+
+    $("Bush").addEventListener("click", castVote);
+    $("Obama").addEventListener("click", castVote);
+    $("refresh").addEventListener("click", refresh);
+    
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function castVote(evt) {
+      $("results").className = "";
+      $("play-again").className = "hidden";
+
+      window.location.hash = '#results';
+
+      if ("{{ observed }}" == evt.target.id) {
+        $("human_correct").className = "indented";
+        $("human_wrong").className = "hidden";
+      } else {
+        $("human_correct").className = "hidden";
+        $("human_wrong").className = "indented";
+      }
+
+      if ("{{ observed }}" == "{{ predicted }}") {
+        $("comp_correct").className = "indented";
+        $("comp_wrong").className = "hidden";
+      } else {
+        $("comp_correct").className = "hidden";
+        $("comp_wrong").className = "indented";
+      }
+    }
+
+    function refresh(evt) {
+      $("results").className = "hidden";
+      $("play-again").className = "";
+      
+      window.location.hash = "#play-again";
+      window.location.reload();
+    }
+
+  </script>
+
+</body>
+</html> 

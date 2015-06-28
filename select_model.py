@@ -30,16 +30,16 @@ def process_pos(string_of_tags):
                          if "NONE" not in sent])
     return re.sub(" [^a-zA-Z ]+", "", stripped) 
 
-def get_and_clean_data(database_name):
-    con = sqlite3.connect(database_name)
-    from_sql = pd.read_sql("SELECT speech, pos, speaker FROM radio_addresses", con)
+def get_and_clean_data(con):
+    from_sql = pd.read_sql("SELECT id, speech, pos, speaker FROM radio_addresses", con)
     data = pd.DataFrame({
-        "speech": [process_speech(speech) 
+        "id": from_sql["id"],
+        "processed_speech": [process_speech(speech) 
                    for speech in from_sql["speech"]],
-        "pos": [process_pos(string_of_tags) 
+        "processed_pos": [process_pos(string_of_tags) 
                 for string_of_tags in from_sql["pos"]],
-        "speaker": [1 if speaker == "obama" else 0 
-                    for speaker in from_sql["speaker"]]
+        "speaker_num": [1 if speaker == "obama" else 0 
+                        for speaker in from_sql["speaker"]]
     })
     return data
 
@@ -69,11 +69,11 @@ def pos_tokenizer(string_of_tags):
 def create_model(param_list):
     # Define two pipelines that will be used as building blocks. 
     speech_pipeline = Pipeline([
-        ("prepare", ItemSelector("speech")),           
+        ("prepare", ItemSelector("processed_speech")),           
         ("create", TfidfVectorizer(stop_words="english"))
     ])
     pos_pipeline = Pipeline([
-        ("prepare", ItemSelector("pos")),
+        ("prepare", ItemSelector("processed_pos")),
         ("create", TfidfVectorizer(use_idf=False, lowercase=False,
                                    tokenizer=pos_tokenizer))
     ])
@@ -158,12 +158,12 @@ def search_models(status_quo, data_train, targets_train):
         sample_point = SamplePoint(param_list, np.mean(objectives), np.var(objectives))
         exp.historical_data.append_sample_points([sample_point])
 
-        #Print most recent F1 score so that user can see progress. 
+        # Print most recent F1 score so that user can see progress. 
         print "mean F1 score:", mean_score
 
     return search_results
 
-#Selects all models that scored within one standard error of the best score.
+# Selects all models that scored within one standard error of the best score.
 def select_models(search_results):
     best_score = max([result[2] for result in search_results])
     SE = min([result[3] for result in search_results
@@ -173,10 +173,13 @@ def select_models(search_results):
 
 def search_select_evaluate(database_name):
     print "Processing data..."
-    data = get_and_clean_data(database_name)
+    con = sqlite3.connect(database_name)
+    data = get_and_clean_data(con)
     data_train, data_test = split_data(data)
-    targets_train = data_train["speaker"]
-    targets_test = data_test["speaker"]
+    targets_train = data_train["speaker_num"]
+    targets_test = data_test["speaker_num"]
+    data_train.to_sql("data_train", con, index = False, if_exists="replace")
+    data_test.to_sql("data_test", con, index = False, if_exists="replace")
 
     print "Obtaining a 'status quo' model..."
     # Choose reasonable (but probably not perfect) hyperparameters. 
@@ -210,7 +213,7 @@ def search_select_evaluate(database_name):
         # Fitting the model may fail if k in SelectKBest was set too high. 
         clf.set_params(select__k="all") 
         clf.fit(data_train, targets_train)
-    joblib.dump(clf, "final_model.pkl")
+    joblib.dump(clf, "model_files/final_model.pkl")
     print "Model saved as 'final_model.pkl' in working directory with auxilary files."
 
     print "Evaluating model on testing set..."
@@ -219,6 +222,7 @@ def search_select_evaluate(database_name):
     print "F1 Score:", f1_score(targets_test, predicted)
     print "Recall:", recall_score(targets_test, predicted)
     print "Precision:", precision_score(targets_test, predicted)
+    
 
 if __name__ == '__main__':
     try: 

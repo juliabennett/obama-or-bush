@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Who said it? Part II.</title>
+
+  <meta name='viewport' content='width=device-width,height=device-height,initial-scale=1'>
+
+  <meta name='author' content='Julia Bennett'>
+  <meta name='description' content='A guessing game.'>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+  <script src="{{ url_for('static', filename='plot.js') }}"></script>
+  <script src="//logitank.net/eugo.js"></script>
+
+</head>
+<body>
+
+  <header class='header'>
+    <div class='splash'></div>
+  </header>
+
+  <div class="container inset-top inset-bottom">
+    <div class="text-xl heavy"> Who said it? Part II. </div>
+    <p>
+      This page describes the machine learning model used to make the computer's decisions in <a href="/">this game</a>. If you haven't played yet, you should give it a try! Our discussion will not require any prior technical knowledge, and should be accessible to anyone interested. In addition to understanding how the model works, you'll hopefully leave with some insight into the way Obama and Bush speak in these presidential radio addresses. 
+    </p>
+  </div>
+
+  <div class="container inset-bottom"> 
+    <div class="text-lg heavy"> Pretty pictures. </div>
+    <p> The plot below allows you to visually explore our model. After experimenting with its functionality, make sure to keep reading to learn where it came from, what information it's displaying, and how it can be interpreted.</p> 
+    <br>
+
+    <div class="center"> 
+      <div>
+        <p class="heavy">  SVM coefficients ordered by 
+          <select id="order" class="heavy">
+            <option value="descMag">descending magnitude</option>
+            <option value="ascMag">ascending magnitude</option>
+            <option value="descVal">descending value</option>
+            <option value="ascVal">ascending value</option>
+          </select> 
+        </p> 
+      </div>      
+
+      <div class="text-sm padded-top"> 
+        <select id="type">
+          <option value="all">both feature types</option>
+          <option value="word">words</option>
+          <option value="pos">part of speech pairs</option>
+        </select>   
+        <input type="text" id="text" placeholder = "filter by feature name"> 
+      </div>
+
+      <div class="text-sm padded-top"> 
+        rank after ordering and filtering: 
+        <input type="number" min="1" max="{{ num_values }}" value="1" id="lower"> 
+         to
+        <input type="number" min="1" max="{{ num_values }}" value="50" id="upper">
+      </div>
+    </div>
+
+    <div class="graph"></div>
+
+    <p class="text-sm center hover-instruct"> (hover over bars to see feature names) </p>
+
+  </div>
+
+  <div class="container inset-bottom">
+    <div class="text-lg heavy"> Machine learning. </div>
+    <p> Models created using machine learning are developed to make "predictions" using previously unseen data by "learning" from some training data. In our case, the model was trained using text from about 500 presidential radio addresses that were each given by either Obama or Bush. From this data, it generated features that were consistently strong indicators of who was speaking.  It makes a prediction every time it plays the game based on the values of these features for the new radio address.</p>
+    <br>
+    <p> It's important to note that radio addresses displayed during the game were not included in the training data. This ensures that the game is fair (except for the fact that you're playing against a computer). </p>
+  </div>
+
+  <div class="container inset-bottom">
+    <div class="text-lg heavy"> About the features. </div>
+    <p> First of all, a "feature" is just a pipeline for extracting a numerical value from any new radio address. Our model has about 1300 features, and each one falls into one of the following two categories:  </p>
+    <ol>
+      <li> <span class="heavy"> Word features. </span> Using the training data, the model chose words that somehow correlate with who is speaking and assigned a feature to each one. Given a new radio address, the model computes the values of these features simultaneously as follows:  counts the number of times each of these words occurs, multiplies these counts by a weight that penalizes words that were common in the training data, and then normalizes by some constant that accounts for transcript length. This whole process is called <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">"tf-idf" weighting</a>, and essentially just assigned a meaningful number to each important word based on its occurrences in the given radio address and in the training data.  </li>
+
+      <li> <span class="heavy"> Part of speech features. </span> A part of speech pair is simply two particular parts of speech that occur consecutively. The model used the training data to find part of speech pairs that were good indicators of who is speaking and assigned a feature to each one. For any new radio address, the values of these features are computed exactly as above but without the middle step that assigns penalties. Specifically, the following two steps are completed: count the number of times each pair occurs and then normalize by a constant to account for transcript length. This process is called "tf" weighting because it's "tf-idf" weighting without the "idf" penalties. </li>
+    </ol>
+  </div>
+
+  <div class="container inset-bottom">
+    <div class="text-lg heavy"> Making predictions. </div>  
+    <p> Our model is an instance of a <a href="https://en.wikipedia.org/wiki/Support_vector_machine">support vector machine</a> (SVM), which defines a way to turn the values described in the previous section into predictions. We're going to skip over the hard (but very nice) math involved in creating an SVM from training data, and instead jump right to discussing the final product.</p>
+    <br>
+    <p> Fortunately, our model is a linear SVM, and these make predictions in a very straightforward way. In particular, it can be described simply by pairing each of the features introduced in the previous section with a coefficient. For any new radio address, prediction is completed by computing the feature values, multiplying each by the appropriate coefficient, and then adding everything together. If the result is positive, then the model predicts Obama. Otherwise, it predicts Bush. The model also supplies an intercept that is added to the sum before the prediction is made. </p>
+    <br>
+    <p> As you might expect, the coefficients and the intercept of an SVM are always determined by choosing values that produce the best outcomes on the training data (while avoiding something called overfitting). </p>
+  </div>
+
+  <div class="container inset-bottom">
+    <div class="text-lg heavy"> Interpreting coefficients. </div> 
+    <p> Let's turn our attention to correctly interpreting the coefficients displayed in the plot above. The first observation we can make is that features with positive coefficients come from words or part of speech pairs that are more characteristic of Obama, while features with negative coefficients come from words or part of speech pairs that are more characteristic of Bush.</p>
+    <br>
+    <p> Moreover, the relative magnitudes of these coefficients indicate the relative strength of the corresponding features as predictors. In other words, increasing the value of a feature whose coefficient has large magnitude will have a more significant impact on prediction than making the same increase for one whose coefficient has small magnitude. Of course, it's important to remember exactly how each feature is calculated when approaching the plot above with this perspective. </p>
+    <br>
+    <p> However, some caution is necessary when analyzing coefficients. Often, predictions rely heavily on many weak features instead of a few strong features. This is a common characterization of text classification that can be observed in the plot above by zooming out to see the magnitudes of all coefficients simultaneously. It follows that the strength of a feature as a predictor does not necessarily correspond to its importance in the model. For example, it's possible that a strong predictor could occur infrequently or only with very tiny values. </p>
+    <br>
+    <p> You're officially prepared to properly investigate the plot displayed above. Happy exploring! </p>
+  </div>
+
+  <div class="container inset-bottom">
+    <div class="text-lg heavy"> Conclusion. </div>  
+    <p> This explanation was designed to be very friendly, but it barely scratched the surface of these complex topics. If you'd like to learn more about machine learning, the standard place to start seems to be <a href="https://www.coursera.org/learn/machine-learning/home/info">Andrew Ng's Coursera course</a>. I also recommend <a href="https://www.med.nyu.edu/chibi/sites/default/files/chibi/Final.pdf">this tutorial</a> about support vector machines, which is extremely thorough but still pretty introductory. Finally, this whole project falls into the category of natural language processing. Rather than direct you to one of the many resources available about this subject, I recommend starting at <a href="https://en.wikipedia.org/wiki/Natural_language_processing">the nlp wikipedia page</a> and narrowing your search from there. </p>
+    <br>
+    <p> If you're already comfortable with these concepts, please check out <a href="https://github.com/juliabennett/obama-or-bush">my GitHub repository</a> for a short technical discussion about some of the cool machinery behind the scenes of this project.<p>
+  </div> 
+
+  <div class="container inset-bottom">
+    <div class="text-lg heavy"> More information. </div>
+    <p> More details about this project, including all relevant data and code, can be found <a href="https://github.com/juliabennett/obama-or-bush">here</a>. You can reach me by email at <a href="mailto:juliacbennett@gmail.com">juliacbennett@gmail.com</a>, and more information about me is available on <a href="https://github.com/juliabennett">my GitHub page</a>. I'd love to hear your feedback and suggestions! </p>
+  </div>
+
+  <div class = "footer"> </div>
+
+  <script>
+    makePlots("coefs", "coefficient value", 1318);
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+  </script>
+
+</body>
+</html>
