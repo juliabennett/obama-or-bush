@@ -1,9 +1,9 @@
 
 #obama-or-bush
 
-Explores radio addresses given by Obama and Bush through webscraping, natural language processing, and machine learning. Everything is done in Python, with the following packages handling most of the heavy lifting: pandas, beautiful soup, scikit-learn, nltk, and moe.
+Explores radio addresses given by Obama and Bush through webscraping, natural language processing, and machine learning. Everything is done in Python, with the following packages handling most of the heavy lifting: pandas, Beautiful Soup, scikit-learn, NLTK, and MOE.
 
-Check out the Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). 
+Check out the Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). This includes interactive plots made with D3.js. 
 
 ##Overview 
 
@@ -11,11 +11,11 @@ This repository contains data and code from a project that had four goals:
 
 1. Create a nice database storing data about radio addresses given by either Obama or Bush, including titles, dates, cleaned-up transcripts, and translations to parts of speech.
 
-2. Define a model that can predict which of these two presidents is the speaker using text from a radio address that it's never seen before. 
+2. Define a model that can identify which of these two presidents is the speaker using text from a radio address that it's never seen before. 
 
 3. Try out Bayesian optimization for hyperparameter tuning using Yelp's Metric Optimization Engine (MOE). 
 
-4. Develop an app that lets users to try to beat (or at least tie...) my model. This should also allow users to learn something about the way Obama and Bush speak in these radio addresses, visually explore how the model makes its predictions, read a little bit of introductory text about machine learning and natural language processing, and maybe have some fun along the way. 
+4. Develop an app that lets users to try to beat (or at least tie...) this model and visually explore how it makes decisions. 
 
 
 ##Details
@@ -42,7 +42,7 @@ Using standard techniques from natural language processing for author classifica
 I ran this script and chose a model that nicely compromised between the number of features and the regularization parameter, realizing the following stats on unseen data:
 
 * accuracy: 0.990697674419
-* F1 Score: 0.987804878049
+* F1 score: 0.987804878049
 * recall: 0.975903614458
 * precision: 1.0
 
@@ -51,7 +51,7 @@ Here's a few key components of this model:
 * Avoids noise by predicting on data that was preprocessed by removing all numbers, punctuation, and tagging errors. 
 * Creates two types of features: 1) tf-idf scores from regular ol' 1-grams, and 2) tf scores from 2-grams describing parts of speech (e.g. "NOUN VERB"). These are filtered by setting maximum and minimum document frequencies. 
 * Selects about 1300 of these features based on their chi-squared scores. 
-* Uses a support vector machine with a linear kernel. The regularization parameter is about equal to 10. 
+* Uses a support vector classifer with a linear kernel. The regularization parameter is about equal to 10. 
 
 Since Bush and Obama both use very particular opening and closing greetings, I also removed the first and last sentence of each speech during preprocessing. This ensured that prediction is based only on true content. 
 
@@ -62,7 +62,7 @@ If you would like more details about the model, check out [the app](http://julia
 
 ####The app.
 
-As mentioned above, the app can be found here: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). It was built with Flask. All data and code used by the app are available in the folder /game.  The data was created by running the script populate\_game\_database.py located in the the folder /helpers. 
+As mentioned above, the app can be found here: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). It was built with Flask and D3.js. All data and code used by the app is available in the folder /game.  The data was created by running the script populate\_game\_database.py located in the the folder /helpers. 
 
 
 ####Build it yourself. 
