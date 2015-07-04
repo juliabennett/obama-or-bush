@@ -1,8 +1,9 @@
+
 #obama-or-bush
 
 Explores radio addresses given by Obama and Bush through webscraping, natural language processing, and machine learning. Everything is done in Python, with the following packages handling most of the heavy lifting: pandas, beautiful soup, scikit-learn, nltk, and moe.
 
-Among other things, this repository contains code for the following Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). Details about this project and how to work with this repository are included below. 
+Check out the Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). 
 
 ##Overview 
 
@@ -21,14 +22,14 @@ This repository contains data and code from a project that had four goals:
 
 ####The data.
 
-The sqlite database obama\_or\_bush.db contains a table called radio\_addresses storing the primary data for this project. This table has 715 rows and includes the following columns:
+The sqlite database obama\_or\_bush.db contains a table called radio\_addresses storing the primary data for this project. This table has observations for 715 radio addresses and includes the following columns:
 
 * id: an integer assigned to uniquely identify each radio address
 * date: the date the radio address was released
 * title: the title provided for the radio address
 * speaker: the name of the president giving the radio address (either "obama" or "bush")
 * speech: a transcript of the speech (all unicode symbols were replaced in the standard way so that the text is super clean)
-* pos: the result of translating each word and punctuation in the transcripts to its part of speech using nltk's part of speech tagger (which does produce a few errors along the way)
+* pos: the result of translating each word and punctuation in the transcript to its part of speech using nltk's part of speech tagger (which does produce a few errors along the way)
 
 The script make\_data.py created this table by webscraping the official Whitehouse website and the former official Whitehouse website. 
 
@@ -68,7 +69,7 @@ As mentioned above, the app can be found here: [juliaben.net/t/who-said-it](http
 
 If you're interested in building parts of this project yourself, you have a few options after downloading this repository: 
 
-1. Use the database obama\_and\_bush.db to do your own analysis. 
+1. Use the database obama\_and\_bush.db to do your own analysis. It could be interesting to add radio addresses from other presidents and train a new model that does multiclass classification. 
 
 2. You can see the hyperparameter search in action and choose your own model by running the following code in the main directory: 
 
