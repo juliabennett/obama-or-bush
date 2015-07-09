@@ -7,22 +7,22 @@ Check out the Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-
 
 ##Overview 
 
-This repository contains data and code from a project that had four goals:
+This repository contains data and code from a project that accomplished four tasks: 
 
-1. Create a nice database storing data about radio addresses given by either Obama or Bush, including titles, dates, cleaned-up transcripts, and translations to parts of speech.
+1. Created a nice database storing data about radio addresses given by either Obama or Bush, including titles, dates, cleaned-up transcripts, and translations to parts of speech.
 
-2. Define a model that can identify which of these two presidents is the speaker using text from a radio address that it's never seen before. 
+2. Trained a support vector classifier to identify which of these two presidents is the speaker using text from a radio address that it's never seen before. This model performs with accuracy greater than .99 and an F1 score greater than .98. 
 
-3. Try out Bayesian optimization for hyperparameter tuning using Yelp's Metric Optimization Engine (MOE). 
+3. Experimented with Bayesian optimization for hyperparameter tuning using Yelp's Metric Optimization Engine (MOE). 
 
-4. Develop an app that lets users to try to beat (or at least tie...) this model and visually explore how it makes decisions. 
+4. Developed a game that lets users to try to beat (or at least tie...) this model and visually explore how it makes decisions. 
 
 
 ##Details
 
 ####The data.
 
-The sqlite database obama\_or\_bush.db contains a table called radio\_addresses storing the primary data for this project. This table has observations for 715 radio addresses and includes the following columns:
+The SQLite database obama\_or\_bush.db contains a table called radio\_addresses storing the primary data for this project. This table has observations for 715 radio addresses and includes the following columns:
 
 * id: an integer assigned to uniquely identify each radio address
 * date: the date the radio address was released
@@ -33,7 +33,7 @@ The sqlite database obama\_or\_bush.db contains a table called radio\_addresses 
 
 The script make\_data.py created this table by webscraping the official Whitehouse website and the former official Whitehouse website. 
 
-It's worth noting that the compilation is nearly comprehensive, but the webscraping script does fail to catch some small number of radio addresses (and obviously doesn't include any that will happen in the future). As is always the case, the script will stop working if either of these websites changes too much. Also, there appear to be a few entries in this table that are mistakes due to imprecise scraping techniques and poor website designs, but these are very rare (likely less than 5 entries out of over 700) and should not significantly effect any analysis. 
+It's worth noting that this compilation is nearly comprehensive, but the webscraping script does fail to catch some small number of radio addresses (and obviously doesn't include any that will happen in the future). As is always the case, the script will stop working if either of these websites changes too much. Also, there appear to be a few entries in this table that are mistakes due to imprecise scraping techniques and poor website designs, but these are very rare (likely less than 5 entries out of over 700) and should not significantly effect any analysis. 
 
 ####The model & hyperparameter tuning.
 
@@ -46,7 +46,7 @@ I ran this script and chose a model that nicely compromised between the number o
 * recall: 0.975903614458
 * precision: 1.0
 
-Here's a few key components of this model: 
+A few key components of this model: 
 
 * Avoids noise by predicting on data that was preprocessed by removing all numbers, punctuation, and tagging errors. 
 * Creates two types of features: 1) tf-idf scores from regular ol' 1-grams, and 2) tf scores from 2-grams describing parts of speech (e.g. "NOUN VERB"). These are filtered by setting maximum and minimum document frequencies. 
@@ -57,17 +57,17 @@ Since Bush and Obama both use very particular opening and closing greetings, I a
 
 Note that a standard 70/30 split was used to break the data into training and testing sets after preprocessing. The preprocessed and split data can be found in the tables data\_train and data\_test in the database obama\_or\_bush.db.
 
-If you would like more details about the model, check out [the app](http://juliaben.net/t/who-said-it/) or follow the instructions at the bottom of this page to load it from the included pickle files.
+If you would like more details about the model, check out [the game](http://juliaben.net/t/who-said-it/) or follow the instructions at the bottom of this page to load it from the included pickle files.
 
 
-####The app.
+####The game.
 
-As mentioned above, the app can be found here: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). It was built with Flask and D3.js. All data and code used by the app is available in the folder /game.  The data was created by running the script populate\_game\_database.py located in the the folder /helpers. 
+As mentioned above, the game can be found here: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). It was built with Flask and D3.js. All data and code used by this game is available in the folder /game.  The data was created by running the script populate\_game\_database.py located in the the folder /helpers. 
 
 
 ####Build it yourself. 
 
-If you're interested in building parts of this project yourself, you have a few options after downloading this repository: 
+There are a few things that can easily be done with this repository: 
 
 1. Use the database obama\_and\_bush.db to do your own analysis. It could be interesting to add radio addresses from other presidents and train a new model that does multiclass classification. 
 
@@ -88,7 +88,7 @@ If you're interested in building parts of this project yourself, you have a few 
     clf = load_clf("../model_files/final_model.pkl")
     ```
 
-    The model will then be accessible through the variable `clf` using standard sci-kit learn tools. It's built to make predictions on the processed data from the tables data\_train and data\_test in obama\_or\_bush.db. 
+    The model will then be accessible through the variable `clf` using standard scikit-learn tools. It's built to make predictions on the processed data from the tables data\_train and data\_test in obama\_or\_bush.db. 
 
 4. You might want to recreate and/or update the radio_addresses table in the database obama_or_bush.db (possibly after improving my webscraping script). This can be completed by running the following code in the main directory: 
 
@@ -96,11 +96,3 @@ If you're interested in building parts of this project yourself, you have a few 
     python make_data.py obama_or_bush.db 
     ```
 
-5. Finally, the data used in the app can be reproduced by running the following code from the main directory: 
-
-
-    ```
-    python helpers/populate_game_database.py obama_or_bush.db game/data.db 
-    ```
-
-Please let me know if there's something else I can include to help you with whatever you're working on. I'm very open to questions and suggestions! 

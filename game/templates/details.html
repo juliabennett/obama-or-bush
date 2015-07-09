@@ -12,12 +12,12 @@
   <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="/t/who-said-it{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="/t/who-said-it{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-  <script src="{{ url_for('static', filename='plot.js') }}"></script>
+  <script src="/t/who-said-it{{ url_for('static', filename='plot.js') }}"></script>
   <script src="//logitank.net/eugo.js"></script>
 
 </head>
@@ -30,7 +30,7 @@
   <div class="container inset-top inset-bottom">
     <div class="text-xl heavy"> Who said it? Part II. </div>
     <p>
-      This page describes the machine learning model used to make the computer's decisions in <a href="/">this game</a>. If you haven't played yet, you should give it a try! Our discussion will not require any prior technical knowledge, and should be accessible to anyone interested. In addition to understanding how the model works, you'll hopefully leave with some insight into the way Obama and Bush speak in these presidential radio addresses. 
+      This page describes the machine learning model used to make the computer's decisions in <a href="/t/who-said-it/">this game</a>. If you haven't played yet, you should give it a try! Our discussion will not require any prior technical knowledge, and should be accessible to anyone interested. In addition to understanding how the model works, you'll hopefully leave with some insight into the way Obama and Bush speak in these presidential radio addresses. 
     </p>
   </div>
 
@@ -115,13 +115,12 @@
     <div class="text-lg heavy"> Conclusion. </div>  
     <p> This explanation was designed to be very friendly, but it barely scratched the surface of these complex topics. If you'd like to learn more about machine learning, the standard place to start seems to be <a href="https://www.coursera.org/learn/machine-learning/home/info">Andrew Ng's Coursera course</a>. I also recommend <a href="https://www.med.nyu.edu/chibi/sites/default/files/chibi/Final.pdf">this tutorial</a> about support vector machines, which is extremely thorough but still pretty introductory. Finally, this whole project falls into the category of natural language processing. Rather than direct you to one of the many resources available about this subject, I recommend starting at <a href="https://en.wikipedia.org/wiki/Natural_language_processing">the nlp wikipedia page</a> and narrowing your search from there. </p>
     <br>
-    <p> If you're already comfortable with these concepts, please check out <a href="https://github.com/juliabennett/obama-or-bush">my GitHub repository</a> for a short technical discussion about some of the cool machinery behind the scenes of this project.<p>
+    <p> If you're already comfortable with these concepts, please check out <a href="https://github.com/juliabennett/obama-or-bush">this GitHub repository</a> for a short technical discussion about some of the cool machinery behind the scenes of this project.<p>
   </div> 
 
   <div class="container inset-bottom">
     <div class="text-lg heavy"> More information. </div>
-    <p> More details about this project, including all relevant data and code, can be found <a href="https://github.com/juliabennett/obama-or-bush">here</a>. You can reach me by email at <a href="mailto:juliacbennett@gmail.com">juliacbennett@gmail.com</a>, and more information about me is available on <a href="https://github.com/juliabennett">my GitHub page</a>. I'd love to hear your feedback and suggestions! </p>
-  </div>
+    <p> More details about this project, including all relevant data and code, can be found in <a href=https://github.com/juliabennett/obama-or-bush>this GitHub repository</a>. You can reach me by email at <a href="mailto:juliacbennett@gmail.com">juliacbennett@gmail.com</a>, and more information about me is available on <a href="http://juliaben.net/t/">my website</a>. I'd love to hear your feedback and suggestions! </p>  </div>
 
   <div class = "footer"> </div>
 

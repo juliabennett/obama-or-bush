@@ -12,12 +12,12 @@
   <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="/t/who-said-it{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="/t/who-said-it{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-  <script src="{{ url_for('static', filename='plot.js') }}"></script>
+  <script src="/t/who-said-it{{ url_for('static', filename='plot.js') }}"></script>
   <script type="text/javascript">
     (function() {
       var e = document.createElement('script'),
@@ -44,7 +44,7 @@
       <div class="text-xl heavy"> Who said it? </div>
       <p> Think you can determine if a presidential radio address was given by Obama or Bush? How many times can you get it right? Play the game to see if you're more accurate than a computer trained with machine learning. Don't worry, it's never seen these transcripts before either.</p>
       <br>
-      <p> Each time you play, the computer will show you what influenced its decision. Maybe humans can learn something too? Also, check out <a href="/details">this page</a> to read more about the computer's decision-making process. </p>
+      <p> Each time you play, the computer will show you what influenced its decision. Maybe humans can learn something too? Also, check out <a href="/t/who-said-it/details/">the details page</a> to read more about the computer's decision-making process. </p>
     </div>
   
     <div class="container"> 
@@ -158,12 +158,12 @@
 
   <div class="container inset-top inset-bottom">
     <div class="text-lg heavy"> Learn how it works. </div>
-    <p> Click <a href="/details">here</a> to learn more about how the computer makes its decisions, and also to see a pretty visualization about the way Obama and Bush speak in these radio addresses. </p>
+    <p> Visit <a href="/t/who-said-it/details/">the details page</a> to learn more about how the computer makes its decisions, and also to see a pretty visualization about the way Obama and Bush speak in these radio addresses. </p>
   </div>
 
   <div class="container inset-top inset-bottom">
     <div class="text-lg heavy"> More information. </div>
-    <p> More details about this project, including all relevant data and code, can be found <a href=https://github.com/juliabennett/obama-or-bush>here</a>. You can reach me by email at <a href="mailto:juliacbennett@gmail.com">juliacbennett@gmail.com</a>, and more information about me is available on <a href="https://github.com/juliabennett">my GitHub page</a>. I'd love to hear your feedback and suggestions! </p>
+    <p> More details about this project, including all relevant data and code, can be found in <a href=https://github.com/juliabennett/obama-or-bush>this GitHub repository</a>. You can reach me by email at <a href="mailto:juliacbennett@gmail.com">juliacbennett@gmail.com</a>, and more information about me is available on <a href="http://juliaben.net/t/">my website</a>. I'd love to hear your feedback and suggestions! </p>
   </div>
 
   <div class="footer"> </div>
