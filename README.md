@@ -1,11 +1,11 @@
 
-#obama-or-bush
+# obama-or-bush
 
 Explores radio addresses given by Obama and Bush through webscraping, natural language processing, and machine learning. Everything is done in Python, with the following packages handling most of the heavy lifting: pandas, Beautiful Soup, scikit-learn, NLTK, and MOE.
 
 Check out the Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). This includes interactive plots made with D3.js. 
 
-##Overview 
+## Overview 
 
 This repository contains data and code from a project that accomplished four tasks: 
 
@@ -18,9 +18,9 @@ This repository contains data and code from a project that accomplished four tas
 4. Developed a game that lets users to try to beat (or at least tie...) this model and visually explore how it makes decisions. 
 
 
-##Details
+## Details
 
-####The data.
+#### The data.
 
 The SQLite database obama\_or\_bush.db contains a table called radio\_addresses storing the primary data for this project. This table has observations for 715 radio addresses and includes the following columns:
 
@@ -35,7 +35,7 @@ The script make\_data.py created this table by webscraping the official Whitehou
 
 It's worth noting that this compilation is nearly comprehensive, but the webscraping script does fail to catch some small number of radio addresses (and obviously doesn't include any that will happen in the future). As is always the case, the script will stop working if either of these websites changes too much. Also, there appear to be a few entries in this table that are mistakes due to imprecise scraping techniques and poor website designs, but these are very rare (likely less than 5 entries out of over 700) and should not significantly effect any analysis. 
 
-####The model & hyperparameter tuning.
+#### The model & hyperparameter tuning.
 
 Using standard techniques from natural language processing for author classification, I created a pretty strong baseline model without too much trouble. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search to improve the choice of hyperparameters for this model. This script does not completely automate the selection process for these hyperparameters. Instead, it allows the user to choose from a list of tuned models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. After this selection is made, the script saves the final model and evaluates it on unseen data.  The searching process relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/).
 
@@ -60,12 +60,12 @@ Note that a standard 70/30 split was used to break the data into training and te
 If you would like more details about the model, check out [the game](http://juliaben.net/t/who-said-it/) or follow the instructions at the bottom of this page to load it from the included pickle files.
 
 
-####The game.
+#### The game.
 
 As mentioned above, the game can be found here: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). It was built with Flask and D3.js. All data and code used by this game is available in the folder /game.  The data was created by running the script populate\_game\_database.py located in the the folder /helpers. 
 
 
-####Build it yourself. 
+#### Build it yourself. 
 
 There are a few things that can easily be done with this repository: 
 
