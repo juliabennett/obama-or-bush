@@ -1,9 +1,7 @@
 
 # obama-or-bush
 
-Explores radio addresses given by Obama and Bush through webscraping, natural language processing, and machine learning. Everything is done in Python, with the following packages handling most of the heavy lifting: pandas, Beautiful Soup, scikit-learn, NLTK, and MOE.
-
-Check out the Flask app: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). This includes interactive plots made with D3.js. 
+Explores radio addresses given by Obama and Bush through webscraping, natural language processing, and machine learning. Everything is done in Python, with the following packages handling most of the heavy lifting: pandas, Beautiful Soup, scikit-learn, NLTK, and MOE. Also includes code for a Flask game with D3 animations. 
 
 ## Overview 
 
@@ -11,7 +9,7 @@ This repository contains data and code from a project that accomplished four tas
 
 1. Created a nice database storing data about radio addresses given by either Obama or Bush, including titles, dates, cleaned-up transcripts, and translations to parts of speech.
 
-2. Trained a support vector classifier to identify which of these two presidents is the speaker using text from a radio address that it's never seen before. This model performs with accuracy greater than .99 and an F1 score greater than .98. 
+2. Trained a support vector classifier to identify which of these two presidents is the speaker using text from a radio address that it's never seen before. This model performs with an F1 score greater than .98. 
 
 3. Experimented with Bayesian optimization for hyperparameter tuning using Yelp's Metric Optimization Engine (MOE). 
 
@@ -37,7 +35,7 @@ It's worth noting that this compilation is nearly comprehensive, but the webscra
 
 #### The model & hyperparameter tuning.
 
-Using standard techniques from natural language processing for author classification, I created a pretty strong baseline model without too much trouble. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search to improve the choice of hyperparameters for this model. This script does not completely automate the selection process for these hyperparameters. Instead, it allows the user to choose from a list of tuned models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. After this selection is made, the script saves the final model and evaluates it on unseen data.  The searching process relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/).
+Using standard techniques from natural language processing for author classification, I created a strong baseline model. The script select\_model.py implements Bayesian optimization to perform an "intelligent" search to improve the choice of hyperparameters for this model. This script does not completely automate the selection process for these hyperparameters. Instead, it allows the user to choose from a list of tuned models that each realize a mean F1 score from 10-fold cross validation that's within one standard error of the best found. After this selection is made, the script saves the final model and evaluates it on unseen data.  The searching process relies on Yelp's MOE, which you can read more about [here](http://yelp.github.io/MOE/).
 
 I ran this script and chose a model that nicely compromised between the number of features and the regularization parameter, realizing the following stats on unseen data:
 
@@ -57,42 +55,7 @@ Since Bush and Obama both use very particular opening and closing greetings, I a
 
 Note that a standard 70/30 split was used to break the data into training and testing sets after preprocessing. The preprocessed and split data can be found in the tables data\_train and data\_test in the database obama\_or\_bush.db.
 
-If you would like more details about the model, check out [the game](http://juliaben.net/t/who-said-it/) or follow the instructions at the bottom of this page to load it from the included pickle files.
-
 
 #### The game.
 
-As mentioned above, the game can be found here: [juliaben.net/t/who-said-it](http://juliaben.net/t/who-said-it/). It was built with Flask and D3.js. All data and code used by this game is available in the folder /game.  The data was created by running the script populate\_game\_database.py located in the the folder /helpers. 
-
-
-#### Build it yourself. 
-
-There are a few things that can easily be done with this repository: 
-
-1. Use the database obama\_and\_bush.db to do your own analysis. It could be interesting to add radio addresses from other presidents and train a new model that does multiclass classification. 
-
-2. You can see the hyperparameter search in action and choose your own model by running the following code in the main directory: 
-
-
-    ```
-    python select_model.py obama_or_bush.db 
-    ```
-
-    In addition to pickling the model you select, this will recreate tables data_train and data_test in obama_or_bush.db. A model produced by this script is designed to make predictions from the processed data in these tables. Since the contents of the folder /model\_files will be replaced with new pickle files, this model can be loaded into memory by following the next set of instructions. 
-
-3. If you'd like to use my model or just explore it more thoroughly, you can run the following two lines from the directory /helpers: 
-
-
-    ```
-    from modeler import * 
-    clf = load_clf("../model_files/final_model.pkl")
-    ```
-
-    The model will then be accessible through the variable `clf` using standard scikit-learn tools. It's built to make predictions on the processed data from the tables data\_train and data\_test in obama\_or\_bush.db. 
-
-4. You might want to recreate and/or update the radio_addresses table in the database obama_or_bush.db (possibly after improving my webscraping script). This can be completed by running the following code in the main directory: 
-
-    ```
-    python make_data.py obama_or_bush.db 
-    ```
-
+Unfortunately, the game is no longer being hosted, however the code and data is still available in the folder /game. It was built with Flask and D3.js. The data was created by running the script populate\_game\_database.py located in the the folder /helpers.
